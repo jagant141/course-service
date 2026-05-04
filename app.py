@@ -11,12 +11,15 @@ courses_table = dynamodb.Table("course-jagan")
 
 
 # ---------------- HEALTH ----------------
-@app.route("health")
+@app.route("/health")
 def health():
     return jsonify({"status": "ok", "service": "course-service"}), 200
 
 
-
+# ---------------- ROOT ----------------
+@app.route("/jagan-student")
+def base():
+    return "Course Service Running", 200
 
 
 # ---------------- CREATE COURSE (POST) ----------------
