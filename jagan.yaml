@@ -1,0 +1,59 @@
+
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    namespace: cloudstudents
+    name: deployment-2048-jagan
+  spec:
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: app-2048-jagan
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app.kubernetes.io/name: app-2048-jagan
+      spec:
+        containers:
+        - image: 991524241826.dkr.ecr.ap-south-2.amazonaws.com/course-jagan:v3
+          imagePullPolicy: Always
+          name: app-2048-jagan
+          ports:
+          - containerPort: 3001
+  ---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    namespace: cloudstudents
+    name: service-2048-jagan
+  spec:
+    ports:
+      - port: 3001
+        targetPort: 3001
+        protocol: TCP
+    type: NodePort
+    selector:
+      app.kubernetes.io/name: app-2048-jagan
+  ---
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    namespace: cloudstudents
+    name: ingress-2048-jagan
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: students-app
+      alb.ingress.kubernetes.io/healthcheck-path: /health
+  spec:
+    ingressClassName: alb
+    rules:
+      - http:
+          paths:
+          - path: /jagan-student
+            pathType: Prefix
+            backend:
+              service:
+                name: service-2048-jagan
+                port:
+                  number: 3001
